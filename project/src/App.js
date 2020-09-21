@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useRef } from "react";
 import "./App.css";
 import produce from "immer";
+import SidePanel from './components/SidePanel'
 
 function App() {
-  const numRows = 20;
-  const numColumns = 20;
+  const numRows = 25;
+  const numColumns = 25;
 
   // This represents our eight neighbors
   const operations = [
@@ -40,6 +41,7 @@ function App() {
     if (!runningRef.current) {
       return;
     }
+    // Grid Algo
     setGrid((g) => {
       return produce(g, gridCopy => {
         for (let i = 0; i < numRows; i++) {
@@ -71,28 +73,22 @@ function App() {
     <div className="App">
       <h1>Conway's Game of Life</h1>
       <div>
-        <button onClick={() => {
-          setRunning(!running)
-          if (!running) {
-          runningRef.current = true
-          runSim()
-          } 
-        }}>
-          {running ? 'stop' : 'start'}
-          </button>
-        <div
+        <div className="grid"
           style={{
             display: "grid",
             gridTemplateColumns: `repeat(${numColumns}, 20px)`,
           }}
-        >
+        > 
           {grid.map((rows, i) =>
             rows.map((col, k) => (
               <div
                 key={`${i}-${k}`}
                 onClick={() => {
                   const newGrid = produce(grid, (gridCopy) => {
-                    gridCopy[i][k] = grid[i][k] ? 0 : 1;
+                    // If the sim is not running, the board can be clicked. Otherwise it is locked.
+                    if (!running) {
+                      gridCopy[i][k] = grid[i][k] ? 0 : 1;
+                    }
                   });
                   setGrid(newGrid);
                 }}
@@ -106,6 +102,7 @@ function App() {
             ))
           )}
         </div>
+        <SidePanel running={running} setRunning={setRunning} runningRef={runningRef} runSim={runSim} setGrid={setGrid} createGrid={createGrid}/>
       </div>
     </div>
   );
