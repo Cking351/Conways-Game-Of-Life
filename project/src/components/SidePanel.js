@@ -2,7 +2,7 @@ import React from "react";
 
 export const SidePanel = (props) => {
   const clear = () => {
-    props.setGrid(props.createGrid())
+      props.setGrid(props.createGrid());
   };
   const run = () => {
     props.setRunning(!props.running);
@@ -10,12 +10,14 @@ export const SidePanel = (props) => {
       props.runningRef.current = true;
       props.runSim();
     }
-  }
+  };
   return (
     <div>
-      <button onClick={() => clear()}>Clear Board</button>
-      <button onClick={() => run()}>
-        {props.running ? "Stop" : "Start"}
+      <button disabled={props.running} onClick={() => clear()}>
+        Clear Board
+      </button>
+      <button 
+      onClick={() => run()}>{props.running ? "Pause" : "Start"}
       </button>
     </div>
   );
