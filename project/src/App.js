@@ -3,9 +3,27 @@ import "./App.css";
 import produce from "immer";
 import SidePanel from './components/SidePanel'
 
+// global var for cb function
+let generation = 0;
+
 function App() {
   const numRows = 25;
   const numColumns = 25;
+
+  const createGrid = () => {
+    const rows = [];
+    for (let i = 0; i < numRows; i++) {
+      rows.push(Array.from(Array(numColumns), () => 0));
+    }
+    return rows;
+  };
+
+  const [grid, setGrid] = useState(createGrid());
+
+  const [running, setRunning] = useState(false)
+
+  const runningRef = useRef(running)
+  runningRef.current = running
 
   // This represents our eight neighbors
   const operations = [
@@ -19,30 +37,16 @@ function App() {
     [-1, 0]
   ]
 
+  
 
-  const createGrid = () => {
-    const rows = [];
-    for (let i = 0; i < numRows; i++) {
-      rows.push(Array.from(Array(numColumns), () => 0));
-    }
-    return rows;
-  };
 
-  const [grid, setGrid] = useState(() => {
-    return createGrid();
-  });
-
-  const [running, setRunning] = useState(false)
-
-  const runningRef = useRef(running)
-  runningRef.current = running
-
-  const runSim = useCallback(() => {
+  const playGame = useCallback(() => {
     if (!runningRef.current) {
       return;
     }
     // Grid Algo
     setGrid((g) => {
+      generation += 1 / 2
       return produce(g, gridCopy => {
         for (let i = 0; i < numRows; i++) {
           for (let k = 0; k < numColumns; k++) {
@@ -64,9 +68,8 @@ function App() {
         }
       })
     })
-    setTimeout(runSim, 1000);
-  }, [])
-
+    setTimeout(playGame, 100);
+  }, [operations])
 
 
   return (
@@ -102,7 +105,10 @@ function App() {
             ))
           )}
         </div>
-        <SidePanel running={running} setRunning={setRunning} runningRef={runningRef} runSim={runSim} setGrid={setGrid} createGrid={createGrid}/>
+        <p>Generation: {generation}</p>
+        <SidePanel running={running} setRunning={setRunning} 
+        runningRef={runningRef} runSim={playGame} 
+        setGrid={setGrid} createGrid={createGrid} />
       </div>
     </div>
   );
