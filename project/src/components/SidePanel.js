@@ -1,8 +1,10 @@
 import React from "react";
+import { Button } from 'reactstrap'
+import "./SidePanel.css";
 
 export const SidePanel = (props) => {
   const clear = () => {
-      props.setGrid(props.createGrid());
+      props.reset()
   };
   const run = () => {
     props.setRunning(!props.running);
@@ -12,13 +14,17 @@ export const SidePanel = (props) => {
     }
   };
   return (
-    <div>
-      <button disabled={props.running} onClick={() => clear()}>
+    <div className="sidePanel">
+      <Button className="btn-1" color="primary"
+       disabled={props.running} onClick={() => clear()}>
         Clear Board
-      </button>
-      <button 
+      </Button>
+      <Button className="btn-2" color="primary"
       onClick={() => run()}>{props.running ? "Pause" : "Start"}
-      </button>
+      </Button>
+      <Button className="btn-3" color="primary" onClick={() => props.random()}>
+        Random Selection
+      </Button>
     </div>
   );
 };

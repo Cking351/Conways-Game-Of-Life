@@ -8,3 +8,22 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+/* * {
+  background-color: #2D2327;
+} */
+
+.grid {
+   display: flex;
+   justify-content: center;
+}
+
+.generation {
+  display: flex;
+  justify-content: center;
+}
+
+p {
+  display: flex;
+  color: #fe8019;
+}
