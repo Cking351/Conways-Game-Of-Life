@@ -1,7 +1,9 @@
 import React, { useState, useCallback, useRef } from "react";
 import "./App.css";
 import produce from "immer";
-import SidePanel from './components/SidePanel'
+import SidePanel from './components/SidePanel';
+import Rules from './components/Rules';
+import { Dropdown } from "reactstrap";
 
 // global var for cb function
 let generation = 0;
@@ -19,6 +21,10 @@ function App() {
   };
 
   const [grid, setGrid] = useState(createGrid());
+
+  const [speed, setSpeed] = useState(250)
+  const speedRef = useRef(speed)
+  speedRef.current = speed
 
   const [running, setRunning] = useState(false)
 
@@ -68,13 +74,34 @@ function App() {
         }
       })
     })
-    setTimeout(playGame, 100);
+    setTimeout(playGame, speedRef.current);
   }, [operations])
 
+  const random = () => {
+    setGrid(() => {
+      const rows = []
+      for (let i = 0; i < numRows; i++) {
+        generation = 0
+        rows.push(Array.from(Array(numColumns), () => (Math.random() > 0.8 ? 1 : 0)))
+      }
+      return rows;
+    })
+  }
+
+  const reset = () => {
+    setGrid(() => {
+    const rows = []
+    for (let i = 0; i< numRows; i++){
+        generation = 0;
+        rows.push(Array.from(Array(numColumns), () => 0));
+    }
+    return rows;
+    })
+}
 
   return (
     <div className="App">
-      <h1>Conway's Game of Life</h1>
+      <h1 className="App-header">Conway's Game of Life</h1>
       <div>
         <div className="grid"
           style={{
@@ -98,18 +125,26 @@ function App() {
                 style={{
                   width: 20,
                   height: 20,
-                  backgroundColor: grid[i][k] ? "black" : undefined,
-                  border: "solid 1px black",
+                  backgroundColor: grid[i][k] ? "#39FF14" : "black",
+                  border: "solid 2px #689d6a",
                 }}
               />
             ))
           )}
         </div>
-        <p>Generation: {generation}</p>
+        <p className="generation">Generation: {generation}</p>
         <SidePanel running={running} setRunning={setRunning} 
-        runningRef={runningRef} runSim={playGame} 
-        setGrid={setGrid} createGrid={createGrid} />
+        runningRef={runningRef} runSim={playGame} reset={reset}
+        setGrid={setGrid} createGrid={createGrid} random={random} />
+        <div>
+          <h3>Change Speed</h3>
+            <button disabled={speedRef.current === 1000 && running ? true : false} onClick={() => {setSpeed(1000)}}>1000ms</button>
+            <button disabled={speedRef.current === 500 && running ? true : false} onClick={() => {setSpeed(500)}}>500ms</button>
+            <button disabled={speedRef.current === 100 && running ? true : false} onClick={() => {setSpeed(100)}}>100ms</button>
+
+        </div>
       </div>
+      <Rules />
     </div>
   );
 }

@@ -1,0 +1,9 @@
+.sidePanel {
+    display: flex;
+    justify-content: space-between;
+    max-width: 25%;
+    margin-left: 38%;
+}
+
+
+
