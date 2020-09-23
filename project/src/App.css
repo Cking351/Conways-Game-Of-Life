@@ -9,9 +9,10 @@
   color: white;
 }
 
-/* * {
-  background-color: #2D2327;
-} */
+* {
+  text-align: center;
+}
+
 
 .grid {
    display: flex;
@@ -21,9 +22,14 @@
 .generation {
   display: flex;
   justify-content: center;
-}
+} 
 
-p {
+/* .app {
   display: flex;
-  color: #fe8019;
+  justify-content: center;
+  margin-left: 5%;
+} */
+
+.controls {
+  flex-direction: row;
 }

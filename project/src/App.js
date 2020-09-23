@@ -1,10 +1,8 @@
 import React, { useState, useCallback, useRef } from "react";
 import "./App.css";
 import produce from "immer";
-import SidePanel from './components/SidePanel';
-import Rules from './components/Rules';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-
+import SidePanel from "./components/SidePanel";
+import Rules from "./components/Rules";
 
 
 // global var for cb function
@@ -26,16 +24,14 @@ function App() {
 
   const [color, setColor] = useState("#39ff14");
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const [speed, setSpeed] = useState(100);
-  const speedRef = useRef(speed)
-  speedRef.current = speed
+  const speedRef = useRef(speed);
+  speedRef.current = speed;
 
   const [running, setRunning] = useState(false);
 
-  const runningRef = useRef(running)
-  runningRef.current = running
+  const runningRef = useRef(running);
+  runningRef.current = running;
 
   // This represents our eight neighbors
   const operations = [
@@ -46,11 +42,8 @@ function App() {
     [1, 1],
     [-1, -1],
     [1, 0],
-    [-1, 0]
-  ]
-
-  
-
+    [-1, 0],
+  ];
 
   const playGame = useCallback(() => {
     if (!runningRef.current) {
@@ -58,66 +51,71 @@ function App() {
     }
     // Grid Algo
     setGrid((g) => {
-      generation += 1 / 2
-      return produce(g, gridCopy => {
+      generation += 1 / 2;
+      return produce(g, (gridCopy) => {
         for (let i = 0; i < numRows; i++) {
           for (let k = 0; k < numColumns; k++) {
-            let neighbors = 0
+            let neighbors = 0;
             operations.forEach(([x, y]) => {
-              const newI = i + x
-              const newK = k + y
-              if (newI >= 0 && newI < numRows && newK >= 0 && newK < numColumns) {
-                neighbors += g[newI][newK]
+              const newI = i + x;
+              const newK = k + y;
+              if (
+                newI >= 0 &&
+                newI < numRows &&
+                newK >= 0 &&
+                newK < numColumns
+              ) {
+                neighbors += g[newI][newK];
               }
-            })
+            });
 
             if (neighbors < 2 || neighbors > 3) {
-              gridCopy[i][k] = 0
+              gridCopy[i][k] = 0;
             } else if (g[i][k] === 0 && neighbors === 3) {
-              gridCopy[i][k] = 1
+              gridCopy[i][k] = 1;
             }
           }
         }
-      })
-    })
+      });
+    });
     setTimeout(playGame, speedRef.current);
-  }, [operations])
+  }, [operations]);
 
   const random = () => {
     setGrid(() => {
-      const rows = []
+      const rows = [];
       for (let i = 0; i < numRows; i++) {
-        generation = 0
-        rows.push(Array.from(Array(numColumns), () => (Math.random() > 0.8 ? 1 : 0)))
+        generation = 0;
+        rows.push(
+          Array.from(Array(numColumns), () => (Math.random() > 0.8 ? 1 : 0))
+        );
       }
       return rows;
-    })
-  }
+    });
+  };
 
   const reset = () => {
     setGrid(() => {
-    const rows = []
-    for (let i = 0; i< numRows; i++){
+      const rows = [];
+      for (let i = 0; i < numRows; i++) {
         generation = 0;
         rows.push(Array.from(Array(numColumns), () => 0));
-    }
-    return rows;
-    })
-}
-
-  const toggle = () => setDropdownOpen(prevState => !prevState);
+      }
+      return rows;
+    });
+  };
 
 
   return (
     <div className="App">
       <h1 className="App-header">Conway's Game of Life</h1>
-      <div>
-        <div className="grid"
+        <div
+          className="grid"
           style={{
             display: "grid",
             gridTemplateColumns: `repeat(${numColumns}, 20px)`,
           }}
-        > 
+        >
           {grid.map((rows, i) =>
             rows.map((col, k) => (
               <div
@@ -135,50 +133,29 @@ function App() {
                   width: 20,
                   height: 20,
                   backgroundColor: grid[i][k] ? `${color}` : "black",
-                  border: "solid 2px #689d6a",
+                  border: "solid 1px darkslategrey",
                 }}
               />
             ))
           )}
         </div>
         <p className="generation">Generation: {generation}</p>
-        <SidePanel running={running} setRunning={setRunning} 
-        runningRef={runningRef} runSim={playGame} reset={reset}
-        setGrid={setGrid} createGrid={createGrid} random={random} />
-        <div>
-          <h3>Change Game Speed</h3>
-          <button disabled={speedRef.current === 1000 && running ? true : false} onClick={() => {setSpeed(1000)}}>1000ms</button>
-          <button disabled={speedRef.current === 500 && running ? true : false} onClick={() => {setSpeed(500)}}>500ms</button>
-          <button disabled={speedRef.current === 100 && running ? true : false} onClick={() => {setSpeed(100)}}>100ms</button> 
-        </div>
-        <br></br>
-        <div>
-          <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-            <DropdownToggle caret>
-              Cell Color
-            </DropdownToggle>
-            <DropdownMenu>
-            <DropdownItem onClick={() => setColor("red")}>Red</DropdownItem>
-            <DropdownItem onClick={() => setColor("pink")}>Pink</DropdownItem>
-            <DropdownItem onClick={() => setColor("white")}>White</DropdownItem>
-            <DropdownItem onClick={() => setColor("orange")}>Orange</DropdownItem>
-            <DropdownItem onClick={() => setColor("#39ff14")}>Neon Green</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-      </div>
+        <SidePanel
+          running={running}
+          setRunning={setRunning}
+          runningRef={runningRef}
+          runSim={playGame}
+          reset={reset}
+          setGrid={setGrid}
+          createGrid={createGrid}
+          random={random}
+          setColor={setColor}
+          setSpeed={setSpeed}
+          speedRef={speedRef}
+        />
       <Rules />
     </div>
   );
 }
 
 export default App;
-
-
-
-
-            // <h3>Change Cell Color</h3>
-            // <button onClick={() => setColor("red")}>Red</button>
-            // <button onClick={() => setColor("pink")}>Pink</button>
-            // <button onClick={() => setColor("white")}>White</button>
-            // <button onClick={() => setColor("#39ff14")}>Green</button>
