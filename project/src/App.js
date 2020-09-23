@@ -13,6 +13,7 @@ function App() {
   const numColumns = 25;
 
   const createGrid = () => {
+    // Create our 2D array and fill with zeros
     const rows = [];
     for (let i = 0; i < numRows; i++) {
       rows.push(Array.from(Array(numColumns), () => 0));
@@ -51,7 +52,7 @@ function App() {
     }
     // Grid Algo
     setGrid((g) => {
-      generation += 1 / 2;
+     generation += 1 / 2;
       return produce(g, (gridCopy) => {
         for (let i = 0; i < numRows; i++) {
           for (let k = 0; k < numColumns; k++) {
