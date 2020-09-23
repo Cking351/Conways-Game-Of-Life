@@ -3,7 +3,9 @@ import "./App.css";
 import produce from "immer";
 import SidePanel from './components/SidePanel';
 import Rules from './components/Rules';
-import { Dropdown } from "reactstrap";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+
+
 
 // global var for cb function
 let generation = 0;
@@ -22,11 +24,15 @@ function App() {
 
   const [grid, setGrid] = useState(createGrid());
 
-  const [speed, setSpeed] = useState(250)
+  const [color, setColor] = useState("#39ff14");
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const [speed, setSpeed] = useState(100);
   const speedRef = useRef(speed)
   speedRef.current = speed
 
-  const [running, setRunning] = useState(false)
+  const [running, setRunning] = useState(false);
 
   const runningRef = useRef(running)
   runningRef.current = running
@@ -99,6 +105,9 @@ function App() {
     })
 }
 
+  const toggle = () => setDropdownOpen(prevState => !prevState);
+
+
   return (
     <div className="App">
       <h1 className="App-header">Conway's Game of Life</h1>
@@ -125,7 +134,7 @@ function App() {
                 style={{
                   width: 20,
                   height: 20,
-                  backgroundColor: grid[i][k] ? "#39FF14" : "black",
+                  backgroundColor: grid[i][k] ? `${color}` : "black",
                   border: "solid 2px #689d6a",
                 }}
               />
@@ -137,11 +146,25 @@ function App() {
         runningRef={runningRef} runSim={playGame} reset={reset}
         setGrid={setGrid} createGrid={createGrid} random={random} />
         <div>
-          <h3>Change Speed</h3>
-            <button disabled={speedRef.current === 1000 && running ? true : false} onClick={() => {setSpeed(1000)}}>1000ms</button>
-            <button disabled={speedRef.current === 500 && running ? true : false} onClick={() => {setSpeed(500)}}>500ms</button>
-            <button disabled={speedRef.current === 100 && running ? true : false} onClick={() => {setSpeed(100)}}>100ms</button>
-
+          <h3>Change Game Speed</h3>
+          <button disabled={speedRef.current === 1000 && running ? true : false} onClick={() => {setSpeed(1000)}}>1000ms</button>
+          <button disabled={speedRef.current === 500 && running ? true : false} onClick={() => {setSpeed(500)}}>500ms</button>
+          <button disabled={speedRef.current === 100 && running ? true : false} onClick={() => {setSpeed(100)}}>100ms</button> 
+        </div>
+        <br></br>
+        <div>
+          <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+            <DropdownToggle caret>
+              Cell Color
+            </DropdownToggle>
+            <DropdownMenu>
+            <DropdownItem onClick={() => setColor("red")}>Red</DropdownItem>
+            <DropdownItem onClick={() => setColor("pink")}>Pink</DropdownItem>
+            <DropdownItem onClick={() => setColor("white")}>White</DropdownItem>
+            <DropdownItem onClick={() => setColor("orange")}>Orange</DropdownItem>
+            <DropdownItem onClick={() => setColor("#39ff14")}>Neon Green</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </div>
       <Rules />
@@ -150,3 +173,12 @@ function App() {
 }
 
 export default App;
+
+
+
+
+            // <h3>Change Cell Color</h3>
+            // <button onClick={() => setColor("red")}>Red</button>
+            // <button onClick={() => setColor("pink")}>Pink</button>
+            // <button onClick={() => setColor("white")}>White</button>
+            // <button onClick={() => setColor("#39ff14")}>Green</button>
