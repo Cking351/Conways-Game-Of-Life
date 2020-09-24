@@ -32,12 +32,15 @@ export const SidePanel = (props) => {
        disabled={props.running} onClick={() => clear()}>
         Clear Board
       </Button>
+
       <Button className="btn-2" color="secondary"
       onClick={() => run()}>{props.running ? "Pause" : "Start"}
       </Button>
+
       <Button className="btn-3" color="secondary" onClick={() => props.random()}>
         Random Selection
       </Button>
+
       {/* Dropdown for cell color */}
       <Dropdown
             isOpen={dropdownOpen}
@@ -59,6 +62,7 @@ export const SidePanel = (props) => {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
+
           {/* Dropdown for game speed */}
           <Dropdown isOpen={speedDrop} toggle={speedToggle}>
           <DropdownToggle caret>Game Speed</DropdownToggle>
@@ -79,6 +83,11 @@ export const SidePanel = (props) => {
           >
             500ms
           </DropdownItem>
+          <DropdownItem disabled={props.current === 300 && props.running ? true : false}
+            onClick={() => {
+              props.setSpeed(300);
+            }}
+          >300ms</DropdownItem>
           <DropdownItem
             disabled={props.current === 100 && props.running ? true : false}
             onClick={() => {

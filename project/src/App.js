@@ -49,10 +49,12 @@ function App() {
   const playGame = useCallback(() => {
     if (!runningRef.current) {
       return;
+    } else {
+      generation += 1
     }
     // Grid Algo
     setGrid((g) => {
-     generation += 1 / 2;
+    //  generation= generation + 1;
       return produce(g, (gridCopy) => {
         for (let i = 0; i < numRows; i++) {
           for (let k = 0; k < numColumns; k++) {
