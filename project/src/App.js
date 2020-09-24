@@ -34,7 +34,7 @@ function App() {
   const runningRef = useRef(running);
   runningRef.current = running;
 
-  // This represents our eight neighbors
+  // This represents our eight neighbors, with all possible scenarios
   const operations = [
     [0, 1],
     [0, -1],
@@ -46,16 +46,18 @@ function App() {
     [-1, 0],
   ];
 
+  // useCallback + produce from immer provides memoization for double buffering.
   const playGame = useCallback(() => {
     if (!runningRef.current) {
       return;
     } else {
+      // On every gamerun, our generation count increases by 1
       generation += 1
     }
     // Grid Algo
     setGrid((g) => {
-    //  generation= generation + 1;
       return produce(g, (gridCopy) => {
+        // Loop over rows and columns
         for (let i = 0; i < numRows; i++) {
           for (let k = 0; k < numColumns; k++) {
             let neighbors = 0;
@@ -71,9 +73,10 @@ function App() {
                 neighbors += g[newI][newK];
               }
             });
-
+            // if our neighbors are out of bounds, they "die"
             if (neighbors < 2 || neighbors > 3) {
               gridCopy[i][k] = 0;
+              // If they satisfy the rules of life, they "live"
             } else if (g[i][k] === 0 && neighbors === 3) {
               gridCopy[i][k] = 1;
             }
@@ -84,6 +87,7 @@ function App() {
     setTimeout(playGame, speedRef.current);
   }, [operations]);
 
+  // Creates our random cell status for game
   const random = () => {
     setGrid(() => {
       const rows = [];
@@ -97,6 +101,7 @@ function App() {
     });
   };
 
+  // Reset grid to all zeros
   const reset = () => {
     setGrid(() => {
       const rows = [];
